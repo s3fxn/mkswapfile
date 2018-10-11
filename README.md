@@ -2,6 +2,8 @@
 
 mkswapfile - make and enable a swap file easily.
 
+** This gem support only Linux.**
+
 ## Installation
 
     $ gem install mkswapfile
