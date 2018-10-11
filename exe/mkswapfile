@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+
+size = ARGV[0].to_i
+if ARGV == [] or size < 1 or size > 8
+  puts
+  puts 'mkswapfile - make and enable a swap file easily.'
+  puts
+  puts 'Usage: sudo mkswapfile size'
+  puts 'size: 1-8 (GB)'
+  puts
+  puts
+  puts '$ sudo mkswapfile 2'
+  puts 'dd if=/dev/zero of=/swap bs=1M count=2049 && chmod 600 /swap && mkswap /swap && \ '
+  puts '(echo \'/swap swap swap defaults 0 0\' | tee -a /etc/fstab) && swapon /swap'
+  puts '....'
+  puts
+  puts '$ free -m'
+  puts '              total        used        free      shared  buff/cache   available'
+  puts 'Mem:            481          90          11           0         379         378'
+  puts 'Swap:          2048           0        2048'
+  puts
+  exit 1
+end
+
+if Process.uid != 0
+  puts 'mkswapfile requires privilege.'
+  exit 1
+end
+
+uname = `uname -a` rescue ''
+unless uname.include?('Linux')
+  puts 'mkswapfile support only Linux.'
+  exit 1
+end
+
+if FileTest.exist?('/swap')
+  puts '/swap already exists.'
+  exit 1
+end
+
+count = 1024 * size + 1
+cmd = "dd if=/dev/zero of=/swap bs=1M count=#{count} && chmod 600 /swap && mkswap /swap && \\\n" +
+      "(echo '/swap swap swap defaults 0 0' | tee -a /etc/fstab) && swapon /swap"
+
+puts cmd
+puts `#{cmd}`
+
