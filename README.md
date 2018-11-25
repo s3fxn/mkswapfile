@@ -7,6 +7,7 @@ mkswapfile - make and enable a swap file easily.
 ## Installation
 
     $ gem install mkswapfile
+    (you may need to run as root or through sudo.)
 
 ## Usage
 
